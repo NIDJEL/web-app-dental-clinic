@@ -1,0 +1,1 @@
+DROP SCHEMA IF EXISTS dental_clinic CASCADE;
