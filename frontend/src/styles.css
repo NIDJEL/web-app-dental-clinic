@@ -16,9 +16,76 @@
   --success: #198754;
   --shadow: 0 18px 45px rgba(23, 35, 38, 0.09);
   --radius: 8px;
+  --motion-fast: 150ms;
+  --motion-base: 260ms;
+  --motion-slow: 460ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-mark {
+  0%,
+  100% {
+    box-shadow: 0 10px 24px rgba(15, 118, 110, 0.22);
+  }
+  50% {
+    box-shadow: 0 14px 34px rgba(15, 118, 110, 0.34);
+  }
 }
 
 * {
@@ -101,6 +168,7 @@ a {
   border-bottom: 1px solid rgba(15, 118, 110, 0.14);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
+  animation: slide-down var(--motion-slow) var(--ease-out) both;
 }
 
 .brand-lockup {
@@ -126,6 +194,13 @@ a {
   color: #ffffff;
   background: var(--teal);
   box-shadow: 0 10px 24px rgba(15, 118, 110, 0.22);
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out);
+}
+
+.brand-lockup:hover .brand-mark {
+  transform: translateY(-1px) rotate(-2deg);
 }
 
 .topbar-actions {
@@ -179,6 +254,7 @@ a {
     linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(231, 111, 81, 0.08)),
     var(--surface);
   box-shadow: var(--shadow);
+  animation: fade-up var(--motion-slow) var(--ease-out) both;
 }
 
 .hero-copy h1,
@@ -301,10 +377,22 @@ a {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow);
+  animation: fade-up var(--motion-slow) var(--ease-out) both;
+  transition:
+    border-color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+.panel:hover {
+  border-color: rgba(15, 118, 110, 0.28);
+  box-shadow: 0 22px 54px rgba(23, 35, 38, 0.11);
+  transform: translateY(-1px);
 }
 
 .lead-form {
   align-self: stretch;
+  animation-delay: 90ms;
 }
 
 .accent-panel {
@@ -382,7 +470,8 @@ a {
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
-    background 0.18s ease;
+    background 0.18s ease,
+    transform 0.18s ease;
 }
 
 .field textarea {
@@ -395,6 +484,7 @@ a {
 .field select:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  transform: translateY(-1px);
 }
 
 .button {
@@ -410,13 +500,18 @@ a {
   line-height: 1;
   text-decoration: none;
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+    transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
 }
 
 .button:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .button-primary {
@@ -467,6 +562,17 @@ a {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 10px 30px rgba(23, 35, 38, 0.06);
+  animation: fade-up var(--motion-slow) var(--ease-out) both;
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
+}
+
+.metric-card:hover {
+  border-color: rgba(231, 111, 81, 0.32);
+  box-shadow: 0 18px 42px rgba(23, 35, 38, 0.09);
+  transform: translateY(-2px);
 }
 
 .metric-card svg {
@@ -503,6 +609,7 @@ a {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 10px 28px rgba(23, 35, 38, 0.05);
+  animation: fade-up var(--motion-slow) var(--ease-out) both;
 }
 
 .workspace-tabs button {
@@ -512,11 +619,21 @@ a {
   color: var(--muted);
   background: transparent;
   font-weight: 900;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.workspace-tabs button:hover {
+  color: var(--teal-dark);
+  background: var(--surface-soft);
 }
 
 .workspace-tabs button.active {
   color: #ffffff;
   background: var(--teal);
+  transform: translateY(-1px);
 }
 
 .workspace-tabs.admin-tabs {
@@ -555,6 +672,11 @@ a {
   background: var(--surface-soft);
   font-size: 13px;
   font-weight: 900;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
 .slot-button.active,
@@ -562,6 +684,7 @@ a {
   color: #ffffff;
   border-color: var(--teal);
   background: var(--teal);
+  transform: translateY(-1px);
 }
 
 .muted {
@@ -642,11 +765,16 @@ td {
   border-radius: var(--radius);
   color: var(--teal-dark);
   background: #ffffff;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
 .icon-button:hover:not(:disabled) {
   border-color: var(--teal);
   background: var(--teal-soft);
+  transform: translateY(-1px);
 }
 
 .status {
@@ -717,6 +845,7 @@ td {
   gap: 4px;
   padding-left: 14px;
   border-left: 3px solid var(--teal);
+  animation: fade-up var(--motion-base) var(--ease-out) both;
 }
 
 .timeline-item time {
@@ -741,6 +870,15 @@ td {
   gap: 14px;
   padding: 12px 0;
   border-bottom: 1px solid var(--line);
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out),
+    padding var(--motion-fast) var(--ease-out);
+}
+
+.compact-row:hover {
+  background: rgba(15, 118, 110, 0.04);
+  transform: translateX(2px);
 }
 
 .compact-row div {
@@ -811,6 +949,17 @@ td {
   height: 100%;
   border-radius: inherit;
   background: var(--coral);
+  transform-origin: left center;
+  animation: grow-x var(--motion-slow) var(--ease-out) both;
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 .status-cloud {
@@ -841,6 +990,7 @@ td {
   place-items: center;
   padding: 20px;
   background: rgba(23, 35, 38, 0.38);
+  animation: fade-in var(--motion-base) var(--ease-out) both;
 }
 
 .auth-modal {
@@ -853,6 +1003,7 @@ td {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 30px 90px rgba(23, 35, 38, 0.24);
+  animation: modal-in var(--motion-slow) var(--ease-out) both;
 }
 
 .modal-close {
@@ -866,6 +1017,14 @@ td {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: #ffffff;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.modal-close:hover {
+  background: var(--surface-soft);
+  transform: rotate(6deg);
 }
 
 .segmented {
@@ -886,11 +1045,16 @@ td {
   color: var(--muted);
   background: transparent;
   font-weight: 900;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
 .segmented button.active {
   color: #ffffff;
   background: var(--teal);
+  transform: translateY(-1px);
 }
 
 .auth-form {
@@ -920,6 +1084,7 @@ td {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   font-weight: 850;
+  animation: toast-in var(--motion-base) var(--ease-out) both;
 }
 
 .toast button {
@@ -942,6 +1107,18 @@ td {
   color: var(--teal-dark);
   background: var(--surface-soft);
   font-weight: 900;
+}
+
+.loading-screen .brand-mark {
+  animation: pulse-mark 1.4s var(--ease-out) infinite;
+}
+
+tbody tr {
+  transition: background var(--motion-fast) var(--ease-out);
+}
+
+tbody tr:hover {
+  background: rgba(15, 118, 110, 0.04);
 }
 
 @media (max-width: 1080px) {
@@ -1066,5 +1243,16 @@ td {
   .text-link {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
