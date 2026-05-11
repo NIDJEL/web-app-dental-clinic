@@ -53,15 +53,20 @@ func main() {
 
 	authRoutes := api.Group("/auth")
 	authRoutes.POST("/login", authHandler.Login)
+	authRoutes.POST("/register", authHandler.RegisterPatient)
 	authRoutes.GET("/me", middleware.AuthMiddleware(cfg), authHandler.Me)
 
 	protected := api.Group("")
 	protected.Use(middleware.AuthMiddleware(cfg))
 
+	protected.GET("/users", middleware.RequireRoles("admin"), authHandler.ListUsers)
+	protected.POST("/users", middleware.RequireRoles("admin"), authHandler.CreateUser)
+	protected.PATCH("/users/:id", middleware.RequireRoles("admin"), authHandler.UpdateUser)
+
 	protected.GET("/patients", appHandler.ListPatients)
 	protected.GET("/patients/:id", appHandler.GetPatient)
 	protected.POST("/patients", middleware.RequireRoles("admin", "registrar"), appHandler.CreatePatient)
-	protected.PUT("/patients/:id", middleware.RequireRoles("admin", "registrar"), appHandler.UpdatePatient)
+	protected.PUT("/patients/:id", middleware.RequireRoles("admin", "registrar", "patient"), appHandler.UpdatePatient)
 	protected.DELETE("/patients/:id", middleware.RequireRoles("admin"), appHandler.DeletePatient)
 
 	protected.GET("/employees", appHandler.ListEmployees)

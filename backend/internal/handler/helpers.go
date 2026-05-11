@@ -9,3 +9,11 @@ func nullInt64ToValue(value sql.NullInt64) any {
 
 	return value.Int64
 }
+
+func nullStringToValue(value sql.NullString) any {
+	if !value.Valid {
+		return nil
+	}
+
+	return value.String
+}

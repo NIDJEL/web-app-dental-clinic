@@ -256,6 +256,27 @@ func (h *AppHandler) UpdatePatient(c *gin.Context) {
 		return
 	}
 
+	role, _ := c.Get("role")
+	if role == "patient" {
+		userIDValue, exists := c.Get("user_id")
+		userID, validUserID := userIDValue.(int64)
+		if !exists || !validUserID {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
+			return
+		}
+
+		var patientID sql.NullInt64
+		err := h.db.QueryRow(c.Request.Context(), "SELECT patient_id FROM users WHERE id = $1", userID).Scan(&patientID)
+		if err != nil {
+			handleDBError(c, err)
+			return
+		}
+		if !patientID.Valid || patientID.Int64 != id {
+			c.JSON(http.StatusForbidden, gin.H{"error": "access denied"})
+			return
+		}
+	}
+
 	var request PatientRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
@@ -821,16 +842,16 @@ func (h *AppHandler) ListVisits(c *gin.Context) {
 	visits := make([]gin.H, 0)
 	for rows.Next() {
 		var (
-			id             int64
-			appointmentID  int64
-			doctorID       int64
-			doctorName     string
-			patientID      int64
-			patientName    string
-			visitDate      time.Time
-			diagnosis      sql.NullString
-			result         sql.NullString
-			doctorComment  sql.NullString
+			id            int64
+			appointmentID int64
+			doctorID      int64
+			doctorName    string
+			patientID     int64
+			patientName   string
+			visitDate     time.Time
+			diagnosis     sql.NullString
+			result        sql.NullString
+			doctorComment sql.NullString
 		)
 
 		err := rows.Scan(
